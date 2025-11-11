@@ -11,32 +11,35 @@ def main():
         docs = json.load(in_f)
 
     preprocessed = []
-    if os.path.exists('preprocessed_documents.json') and os.path.getsize('preprocessed_documents.json') > 0:
-        with open('preprocessed_documents.json', 'r') as out_f:
-            preprocessed = json.load(out_f)
+    if os.path.exists('preprocessed_documents.jsonl'):
+        with open('preprocessed_documents.jsonl', 'r') as f:
+            processed = sum(1 for _ in f) # counts lines
+    print(f"Resuming from {processed}/{len(docs)}")
 
-    start = len(preprocessed)
-    for i in range(start, len(docs), 1024):
-        batch_docs = docs[i:i+1024]
-        batch = [doc['text'] for doc in batch_docs]
-        embeddings = model.encode(batch, batch_size=1) # experiment showed that this ran the fastest per document
+    with open('preprocessed_documents.jsonl', 'a') as out_f:
+        for i in range(processed, len(docs), 1024):
+            chunk = docs[i:i+1024]
+            texts = [doc['text'] for doc in batch_docs]
+            embeddings = model.encode(texts, batch_size=1) # experiment showed that this ran the fastest per document
 
-        batch_data = [
-            {
-                'id': item['id'], 
-                'text': item['text'], 
-                'embedding': embedding.tolist()
-            } 
-            for item, embedding in zip(batch_docs, embeddings)
-        ]
+            for document, embedding in zip(chunk, embeddings):
+                json.dump({
+                    'id': document['id'],
+                    'text': document['text'],
+                    'embedding': embedding.tolist()
+                }, out_f)
+                out_f.write('\n')
 
-        preprocessed.extend(batch_data)
-    
-        with open('preprocessed_documents.json', 'w') as out_f:
-            json.dump(preprocessed, out_f)
+            out_f.flush()
 
-        print('Processed ', i + len(batch_docs), ' of ', len(docs), ' documents')
+            print('Processed ', i + len(chunk), ' of ', len(docs), ' documents')
 
+    # once we finish loading everything, turn it into a .json (rather than jsonl)
+    data = [json.loads(line) for line in open('preprocessed_documents.jsonl')]
+    json.dump(data, open('preprocessed_documents.json', 'w'))
+
+    # clean up temporary jsonl file
+    os.remove('preprocessed_documents.jsonl')
 
 if __name__ == "__main__":
     main()
