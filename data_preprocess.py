@@ -16,10 +16,10 @@ def main():
             preprocessed = json.load(out_f)
 
     start = len(preprocessed)
-    for i in range(start, len(docs), 128):
-        batch_docs = docs[i:i+128]
+    for i in range(start, len(docs), 1024):
+        batch_docs = docs[i:i+1024]
         batch = [doc['text'] for doc in batch_docs]
-        embeddings = model.encode(batch, batch_size=1) # experiment to see what runs faster
+        embeddings = model.encode(batch, batch_size=1) # experiment showed that this ran the fastest per document
 
         batch_data = [
             {
