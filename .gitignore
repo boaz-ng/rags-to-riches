@@ -1,3 +1,5 @@
 documents.json
+preprocessed_documents.json
 queries.json
+database.index
 .venv

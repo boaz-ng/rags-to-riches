@@ -11,6 +11,7 @@ def main():
         docs = json.load(in_f)
 
     preprocessed = []
+    processed = 0
     if os.path.exists('preprocessed_documents.jsonl'):
         with open('preprocessed_documents.jsonl', 'r') as f:
             processed = sum(1 for _ in f) # counts lines
@@ -19,7 +20,7 @@ def main():
     with open('preprocessed_documents.jsonl', 'a') as out_f:
         for i in range(processed, len(docs), 1024):
             chunk = docs[i:i+1024]
-            texts = [doc['text'] for doc in batch_docs]
+            texts = [doc['text'] for doc in chunk]
             embeddings = model.encode(texts, batch_size=1) # experiment showed that this ran the fastest per document
 
             for document, embedding in zip(chunk, embeddings):
