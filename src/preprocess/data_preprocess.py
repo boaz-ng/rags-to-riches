@@ -10,6 +10,7 @@ def main():
     with open('documents.json', 'r') as in_f:
         docs = json.load(in_f)
 
+    preprocess_path_json = '../../data/preprocessed/preprocessed_documents.json'
     preprocessed = []
     processed = 0
     if os.path.exists('preprocessed_documents.jsonl'):
@@ -37,7 +38,7 @@ def main():
 
     # once we finish loading everything, turn it into a .json (rather than jsonl)
     data = [json.loads(line) for line in open('preprocessed_documents.jsonl')]
-    json.dump(data, open('preprocessed_documents.json', 'w'))
+    json.dump(data, open(preprocess_path_json, 'w'))
 
     # clean up temporary jsonl file
     os.remove('preprocessed_documents.jsonl')

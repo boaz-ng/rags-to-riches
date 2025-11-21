@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 class VectorDatabase:
-    def __init__(self, embeddings_path='preprocessed_documents.json', index_path='database.index'):
+    def __init__(self, embeddings_path='../../data/preprocessed/preprocessed_documents.json', index_path='../../data/preprocessed/database.index'):
 
         self.embeddings_path = embeddings_path
         self.index_path = index_path
