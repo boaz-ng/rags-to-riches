@@ -10,7 +10,7 @@ def main():
     with open('documents.json', 'r') as in_f:
         docs = json.load(in_f)
 
-    preprocess_path_json = '../../data/preprocessed/preprocessed_documents.json'
+    preprocess_path_json = 'data/preprocessed/preprocessed_documents.json'
     preprocessed = []
     processed = 0
     if os.path.exists('preprocessed_documents.jsonl'):

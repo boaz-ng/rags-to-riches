@@ -2,4 +2,6 @@ documents.json
 preprocessed_documents.json
 queries.json
 database.index
+models/
+__pycache__/
 .venv
